@@ -148,7 +148,7 @@ public class URILocatorTest extends AbstractLocatorTest {
 
   // FIXME: this important test fails, but disabling for now
   @Test
-  public void _testNonAsciiIdempotency() throws URISyntaxException {
+  public void testNonAsciiIdempotency() throws URISyntaxException {
     String original = "http://dbpedia.org/resource/K%C3%B8benhavn";
 
     URILocator uri1 = new URILocator(original);

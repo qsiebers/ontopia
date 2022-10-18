@@ -57,7 +57,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
+			<artifactId>slf4j-reload4j</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>antlr</groupId>
@@ -189,7 +189,7 @@
 			</plugin>
 			<plugin>
 				<groupId>de.jflex</groupId>
-				<artifactId>maven-jflex-plugin</artifactId>
+				<artifactId>jflex-maven-plugin</artifactId>
 			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>

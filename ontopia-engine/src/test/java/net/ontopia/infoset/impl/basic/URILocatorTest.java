@@ -20,19 +20,18 @@
 
 package net.ontopia.infoset.impl.basic;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import net.ontopia.infoset.core.LocatorIF;
 import net.ontopia.utils.OntopiaRuntimeException;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class URILocatorTest extends AbstractLocatorTest {
 
   protected static final String NOTATION = "URI";
   protected static final String ADDRESS = "http://www.ontopia.net/"; // Note: it is normalized
   
-  public URILocatorTest(String name) {
-    super(name);
-  }
-
   @Override
   protected LocatorIF createLocator() {
     return createLocator(NOTATION, ADDRESS);
@@ -52,80 +51,111 @@ public class URILocatorTest extends AbstractLocatorTest {
     
   // --- tests
 
+  @Test
   public void testProperties() {
     LocatorIF locator = createLocator(NOTATION, ADDRESS);
-    assertTrue("notation property not correctly set",
+    Assert.assertTrue("notation property not correctly set",
 	   NOTATION.equals(locator.getNotation()));
-    assertTrue("address property not correctly set",
+    Assert.assertTrue("address property not correctly set",
 	   ADDRESS.equals(locator.getAddress()));
   }
 
+  @Test
+  public void testFileWithPlus() {
+    File file = new File("+");
+    LocatorIF locator = new URILocator(file);
+    String correct = getCorrectFileURI(file); 
+    Assert.assertTrue("+ character not escaped correctly, got '" + locator.getAddress() + "'"
+               + ", correct: '" + correct + "'",
+               locator.getAddress().equals(correct));
+  }
+
+  @Test
+  public void testFileWithPercent() {
+    File file = new File("%");
+    LocatorIF locator = new URILocator(file);
+    // % must be escaped, even in internal form
+    String correct = getCorrectFileURI(file) + "25";
+    Assert.assertTrue("% character not escaped correctly: '" + locator.getAddress() + "', " +
+               "correct: '" + correct + "'",
+               locator.getAddress().equals(correct));
+  }
+
+  @Test
   public void testGetExternalFormSimple2() {
-    testExternalForm("http://www.example.com/index.jsp",
+    assertExternalForm("http://www.example.com/index.jsp",
                      "http://www.example.com/index.jsp");
   }
 
+  @Test
   public void testGetExternalFormSimple3() {
-    testExternalForm("http://www.example.com/index.jsp?bongo",
+    assertExternalForm("http://www.example.com/index.jsp?bongo",
                      "http://www.example.com/index.jsp?bongo");
   }
 
+  @Test
   public void testGetExternalFormSimple4() {
-    testExternalForm("http://www.example.com/index.jsp?bongo#bash",
+    assertExternalForm("http://www.example.com/index.jsp?bongo#bash",
                      "http://www.example.com/index.jsp?bongo#bash");
   }
 
+  @Test
   public void testGetExternalFormDirnameSpace() {
-    testExternalForm("http://www.ontopia.no/space%20in%20url.html",
+    assertExternalForm("http://www.ontopia.no/space%20in%20url.html",
                      "http://www.ontopia.no/space%20in%20url.html");
   }
 
+  @Test
   public void testReferenceResolutionRFC3986() {
     String base = "http://a/b/c/d;p?q";
     
-    testAbsoluteResolution(base, "g:h", "g:h");
-    testAbsoluteResolution(base, "g", "http://a/b/c/g");
-    testAbsoluteResolution(base, "./g", "http://a/b/c/g");
-    testAbsoluteResolution(base, "g/", "http://a/b/c/g/");
-    testAbsoluteResolution(base, "/g", "http://a/g");
-    testAbsoluteResolution(base, "//g", "http://g");
+    assertAbsoluteResolution(base, "g:h", "g:h");
+    assertAbsoluteResolution(base, "g", "http://a/b/c/g");
+    assertAbsoluteResolution(base, "./g", "http://a/b/c/g");
+    assertAbsoluteResolution(base, "g/", "http://a/b/c/g/");
+    assertAbsoluteResolution(base, "/g", "http://a/g");
+    assertAbsoluteResolution(base, "//g", "http://g");    
     //testAbsoluteResolution(base, "?y", "http://a/b/c/d;p?y");
-    testAbsoluteResolution(base, "g?y", "http://a/b/c/g?y");
-    testAbsoluteResolution(base, "#s", "http://a/b/c/d;p?q#s");
-    testAbsoluteResolution(base, "g#s", "http://a/b/c/g#s");
-    testAbsoluteResolution(base, "g?y#s", "http://a/b/c/g?y#s");
-    testAbsoluteResolution(base, ";x", "http://a/b/c/;x");
-    testAbsoluteResolution(base, "g;x", "http://a/b/c/g;x");
-    testAbsoluteResolution(base, "g;x?y#s", "http://a/b/c/g;x?y#s");
-    testAbsoluteResolution(base, "", "http://a/b/c/d;p?q");
-    testAbsoluteResolution(base, ".", "http://a/b/c/");
-    testAbsoluteResolution(base, "./", "http://a/b/c/");
-    testAbsoluteResolution(base, "..", "http://a/b/");
-    testAbsoluteResolution(base, "../", "http://a/b/");
-    testAbsoluteResolution(base, "../g", "http://a/b/g");
-    testAbsoluteResolution(base, "../..", "http://a/");
-    testAbsoluteResolution(base, "../../", "http://a/");
-    testAbsoluteResolution(base, "../../g", "http://a/g");
+    assertAbsoluteResolution(base, "g?y", "http://a/b/c/g?y");
+    assertAbsoluteResolution(base, "#s", "http://a/b/c/d;p?q#s");
+    assertAbsoluteResolution(base, "g#s", "http://a/b/c/g#s");
+    assertAbsoluteResolution(base, "g?y#s", "http://a/b/c/g?y#s");
+    assertAbsoluteResolution(base, ";x", "http://a/b/c/;x");
+    assertAbsoluteResolution(base, "g;x", "http://a/b/c/g;x");
+    assertAbsoluteResolution(base, "g;x?y#s", "http://a/b/c/g;x?y#s");
+    assertAbsoluteResolution(base, "", "http://a/b/c/d;p?q");
+    assertAbsoluteResolution(base, ".", "http://a/b/c/");
+    assertAbsoluteResolution(base, "./", "http://a/b/c/");
+    assertAbsoluteResolution(base, "..", "http://a/b/");
+    assertAbsoluteResolution(base, "../", "http://a/b/");
+    assertAbsoluteResolution(base, "../g", "http://a/b/g");
+    assertAbsoluteResolution(base, "../..", "http://a/");
+    assertAbsoluteResolution(base, "../../", "http://a/");
+    assertAbsoluteResolution(base, "../../g", "http://a/g");
   }
   
+  @Test
   public void testEscapedAmpersand() {
-    testExternalForm("http://www.ontopia.net/?foo=bar%26baz",
+    assertExternalForm("http://www.ontopia.net/?foo=bar%26baz",
                      "http://www.ontopia.net/?foo=bar%26baz");
   }
 
+  @Test
   public void testEscapedHash() {
-    testExternalForm("http://www.ontopia.net/?foo=bar%23baz",
+    assertExternalForm("http://www.ontopia.net/?foo=bar%23baz",
                      "http://www.ontopia.net/?foo=bar%23baz");
   }
 
+  // FIXME: this important test fails, but disabling for now
+  @Test
   public void _testNonAsciiIdempotency() throws URISyntaxException {
     String original = "http://dbpedia.org/resource/K%C3%B8benhavn";
 
     URILocator uri1 = new URILocator(original);
-    assertEquals("External form differs from original",
+    Assert.assertEquals("External form differs from original",
                  original, uri1.getExternalForm());
     URILocator uri2 = new URILocator(uri1.getExternalForm());
-    assertEquals("External form differs from original",
+    Assert.assertEquals("External form differs from original",
                  original, uri2.getExternalForm());
   }
   
@@ -134,17 +164,17 @@ public class URILocatorTest extends AbstractLocatorTest {
     URILocator locator = URILocator.create("http://www.example.org/cablemap/european-cables.ctm#EASTERN%20EUROPEAN%20POSTS%20COLLECTIVE");
     URILocator locator2 = URILocator.create("http://www.example.org/example#fragm%7Bent");
 
-    assertNotNull(locator);
-    assertNotNull(locator2);
+    Assert.assertNotNull(locator);
+    Assert.assertNotNull(locator2);
     
-    assertTrue(locator.getUri().getSchemeSpecificPart().endsWith("european-cables.ctm"));
-    assertTrue(locator2.getUri().getSchemeSpecificPart().endsWith("example"));
+    Assert.assertTrue(locator.getUri().getSchemeSpecificPart().endsWith("european-cables.ctm"));
+    Assert.assertTrue(locator2.getUri().getSchemeSpecificPart().endsWith("example"));
     
-    assertEquals("EASTERN%20EUROPEAN%20POSTS%20COLLECTIVE", locator.getUri().getRawFragment());
-    assertEquals("fragm%7Bent", locator2.getUri().getRawFragment());
+    Assert.assertEquals("EASTERN%20EUROPEAN%20POSTS%20COLLECTIVE", locator.getUri().getRawFragment());
+    Assert.assertEquals("fragm%7Bent", locator2.getUri().getRawFragment());
 
-    assertEquals("EASTERN EUROPEAN POSTS COLLECTIVE", locator.getUri().getFragment());
-    assertEquals("fragm{ent", locator2.getUri().getFragment());
+    Assert.assertEquals("EASTERN EUROPEAN POSTS COLLECTIVE", locator.getUri().getFragment());
+    Assert.assertEquals("fragm{ent", locator2.getUri().getFragment());
   }
   
   // https://github.com/ontopia/ontopia/issues/366
@@ -153,43 +183,59 @@ public class URILocatorTest extends AbstractLocatorTest {
     
     URILocator locator = URILocator.create("http://www.infocom.co.jp/dsp/sample#" + fragmentUTF);
 
-    assertNotNull(locator);
-    assertTrue(locator.getUri().getSchemeSpecificPart().endsWith("sample"));
-    assertEquals(fragmentUTF, locator.getUri().getRawFragment());
-    assertEquals(fragmentUTF, locator.getUri().getFragment());
+    Assert.assertNotNull(locator);
+    Assert.assertTrue(locator.getUri().getSchemeSpecificPart().endsWith("sample"));
+    Assert.assertEquals(fragmentUTF, locator.getUri().getRawFragment());
+    Assert.assertEquals(fragmentUTF, locator.getUri().getFragment());
   }
 
   // https://github.com/ontopia/ontopia/issues/289
   public void testIssue289() {
     URILocator locator = URILocator.create("http://en.wikipedia.org/wiki/Beethoven/x+y/");
 
-    assertNotNull(locator);
-    assertTrue(locator.getUri().getSchemeSpecificPart().endsWith("x+y/"));
+    Assert.assertNotNull(locator);
+    Assert.assertTrue(locator.getUri().getSchemeSpecificPart().endsWith("x+y/"));
   }
 
   // --- Internal
 
-  private void testAbsoluteResolution(String base, String uri, String external) {
+  private void assertAbsoluteResolution(String base, String uri, String external) {
     try {
       // tests based on http://tools.ietf.org/html/rfc3986#section-5.4.1
       LocatorIF baseURI = new URILocator(base);
       LocatorIF locator = baseURI.resolveAbsolute(uri);
-      assertTrue("incorrect external form for URI '" + uri + "': '" +
+      Assert.assertTrue("incorrect external form for URI '" + uri + "': '" +
           locator.getExternalForm() + "', correct '" + external + "'",
           locator.getExternalForm().equals(external));
     } catch (URISyntaxException e) {
-      fail("INTERNAL ERROR: " + e);
+      Assert.fail("INTERNAL ERROR: " + e);
     }
   }
   
-  private void testExternalForm(String uri, String external) {
+  private void assertExternalForm(String uri, String external) {
     try {
       LocatorIF locator = new URILocator(uri);
-      assertTrue("incorrect external form for URI '" + uri + "': '" +
+      Assert.assertTrue("incorrect external form for URI '" + uri + "': '" +
                  locator.getExternalForm() + "', correct '" + external + "'",
                  locator.getExternalForm().equals(external));
     } catch (URISyntaxException e) {
-      fail("INTERNAL ERROR: " + e);
+      Assert.fail("INTERNAL ERROR: " + e);
+    }
+  }
+
+  private String getCorrectFileURI(File file) {
+    // produce initial string
+    String uri = file.getAbsolutePath().replace(File.separatorChar, '/');
+    if (!uri.startsWith("/"))
+      uri = "/" + uri;
+    uri = "file:" + uri;
+
+    // now, transcode to UTF-8
+    try {
+      byte raw[] = uri.getBytes("UTF-8");
+      return new String(raw, 0, raw.length, "8859_1");
+    } catch (java.io.UnsupportedEncodingException e) {
+      throw new OntopiaRuntimeException(e);
     }
   }
 }

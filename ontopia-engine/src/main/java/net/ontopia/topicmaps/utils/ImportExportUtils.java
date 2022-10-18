@@ -110,7 +110,7 @@ public class ImportExportUtils {
    * 
    * @since 2.0
    */
-  private static TopicMapReaderIF getReader (URL url) {
+  public static TopicMapReaderIF getReader (URL url) {
     String address = url.toString();
     if (address.startsWith (ONTOPIA_RDBMS_URI_PREFIX))
       return new RDBMSTopicMapReader (getTopicMapId (address));

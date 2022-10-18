@@ -22,6 +22,7 @@ package net.ontopia.topicmaps.impl.rdbms;
 
 import java.io.Externalizable;
 import java.net.URI;
+import java.util.Objects;
 import net.ontopia.infoset.core.LocatorIF;
 import net.ontopia.infoset.impl.basic.URILocator;
 
@@ -38,6 +39,7 @@ public class RDBMSLocator extends URILocator implements Externalizable {
   }
 
   public RDBMSLocator(LocatorIF locator) {
+    Objects.requireNonNull(locator, "The locator address cannot be null.");
     if (locator instanceof URILocator) {
       address = ((URILocator) locator).getUri();
     } else {

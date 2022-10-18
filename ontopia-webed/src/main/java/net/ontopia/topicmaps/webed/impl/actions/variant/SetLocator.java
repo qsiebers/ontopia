@@ -21,10 +21,10 @@
 package net.ontopia.topicmaps.webed.impl.actions.variant;
 
 import java.net.URISyntaxException;
-
+import java.util.Collections;
 import net.ontopia.infoset.impl.basic.URILocator;
-import net.ontopia.topicmaps.core.TopicNameIF;
 import net.ontopia.topicmaps.core.TopicMapBuilderIF;
+import net.ontopia.topicmaps.core.TopicNameIF;
 import net.ontopia.topicmaps.core.VariantNameIF;
 import net.ontopia.topicmaps.webed.core.ActionIF;
 import net.ontopia.topicmaps.webed.core.ActionParametersIF;
@@ -54,7 +54,7 @@ public class SetLocator implements ActionIF {
       
       // create new occurrence
       TopicMapBuilderIF builder = basename.getTopicMap().getBuilder();
-      variant = builder.makeVariantName(basename, "");
+      variant = builder.makeVariantName(basename, "", Collections.emptySet());
     }
 
     try {

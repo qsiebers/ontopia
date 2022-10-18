@@ -24,12 +24,12 @@ import java.io.File;
 import java.util.Collections;
 import java.util.Iterator;
 import net.ontopia.utils.OntopiaRuntimeException;
-import net.ontopia.utils.StringifierIF;
 import net.ontopia.infoset.core.LocatorIF;
 import net.ontopia.infoset.impl.basic.URILocator;
 import net.ontopia.topicmaps.utils.TopicStringifiers;
 import com.touchgraph.graphlayout.Node;
 import java.net.URISyntaxException;
+import java.util.function.Function;
 import net.ontopia.topicmaps.core.AssociationIF;
 import net.ontopia.topicmaps.core.AssociationRoleIF;
 import net.ontopia.topicmaps.core.TopicIF;
@@ -46,7 +46,7 @@ public class VizUtils {
     }
   }
   
-  public static StringifierIF stringifierFor(TopicIF scope) {
+  public static Function<TopicIF, String> stringifierFor(TopicIF scope) {
     if (scope == null)
       return TopicStringifiers.getDefaultStringifier();
 

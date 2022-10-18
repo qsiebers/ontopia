@@ -32,6 +32,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Predicate;
 import net.ontopia.infoset.core.LocatorIF;
 import net.ontopia.infoset.impl.basic.URILocator;
 import net.ontopia.topicmaps.core.AssociationIF;
@@ -50,7 +51,6 @@ import net.ontopia.topicmaps.query.core.QueryResultIF;
 import net.ontopia.topicmaps.query.utils.QueryUtils;
 import net.ontopia.topicmaps.utils.PSI;
 import net.ontopia.topicmaps.utils.deciders.TMExporterDecider;
-import net.ontopia.utils.DeciderIF;
 import net.ontopia.utils.OntopiaRuntimeException;
 import org.apache.jena.rdf.model.AnonId;
 import org.apache.jena.rdf.model.Literal;
@@ -80,7 +80,7 @@ public class RDFTopicMapWriter implements TopicMapWriterIF {
   protected Map preferred_roles;
   protected boolean preserve_scope = true;
   protected boolean preserve_reification = true; 
-  protected DeciderIF filter;
+  protected Predicate filter;
   
   private static final String NS_RDF  = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
   private static final String NS_RDFS = "http://www.w3.org/2000/01/rdf-schema#";
@@ -179,7 +179,7 @@ public class RDFTopicMapWriter implements TopicMapWriterIF {
    *
    * @param filter Places constraints on individual topicmap constructs.
    */  
-  public void setFilter(DeciderIF filter) {
+  public void setFilter(Predicate filter) {
     this.filter = new TMExporterDecider(filter);
   }
   
@@ -192,7 +192,7 @@ public class RDFTopicMapWriter implements TopicMapWriterIF {
   private boolean filterOk(Object unfiltered) {
     if (filter == null)
       return true;
-    return filter.ok(unfiltered);
+    return filter.test(unfiltered);
   }
 
   /**
@@ -209,7 +209,7 @@ public class RDFTopicMapWriter implements TopicMapWriterIF {
 
     while (unfilteredIt.hasNext()) {
       Object current = unfilteredIt.next();
-      if (filter.ok(current))
+      if (filter.test(current))
         retVal.add(current);
     }
     return retVal;
@@ -766,8 +766,8 @@ public class RDFTopicMapWriter implements TopicMapWriterIF {
       setPreserveScope((Boolean) value);
     }
     value = properties.get(PROPERTY_FILTER);
-    if ((value != null) && (value instanceof DeciderIF)) {
-      setFilter((DeciderIF) value);
+    if ((value != null) && (value instanceof Predicate)) {
+      setFilter((Predicate) value);
     }
   }
 }

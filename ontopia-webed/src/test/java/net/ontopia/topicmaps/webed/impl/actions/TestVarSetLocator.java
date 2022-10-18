@@ -55,7 +55,7 @@ public class TestVarSetLocator extends AbstractWebedTestCase {
     // create new (external) variant for base name
     URILocator locator = URILocator.create("http://www.snus.org");
     
-    VariantNameIF var = builder.makeVariantName(bn, locator);
+    VariantNameIF var = builder.makeVariantName(bn, locator, Collections.emptySet());
     
     //make action
     ActionIF action = new SetLocator();
@@ -82,7 +82,7 @@ public class TestVarSetLocator extends AbstractWebedTestCase {
     TopicMapBuilderIF builder =
       bn.getTopicMap().getBuilder();
     
-    VariantNameIF var = builder.makeVariantName(bn, "");
+    VariantNameIF var = builder.makeVariantName(bn, "", Collections.emptySet());
     int bnsize = bn.getVariants().size();
     
     //make action
@@ -134,7 +134,7 @@ public void testEmptyParams() throws IOException {
     // create new (external) variant for base name
     URILocator locator = URILocator.create("http://www.snus.org");
     
-    VariantNameIF var = builder.makeVariantName(bn, locator);
+    VariantNameIF var = builder.makeVariantName(bn, locator, Collections.emptySet());
         
     //make action
     ActionIF action = new SetLocator();
@@ -177,7 +177,7 @@ public void testEmptyParams() throws IOException {
     TopicMapBuilderIF builder =
       bn.getTopicMap().getBuilder();
     
-    VariantNameIF var = builder.makeVariantName(bn, "");
+    VariantNameIF var = builder.makeVariantName(bn, "", Collections.emptySet());
     
     //make action
     ActionIF action = new SetLocator();

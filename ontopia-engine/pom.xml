@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>ontopia-parent</artifactId>
 		<groupId>net.ontopia</groupId>
-		<version>5.3.1-SNAPSHOT</version>
+		<version>5.4.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>ontopia-engine</artifactId>
@@ -70,10 +70,6 @@
 		<dependency>
 			<groupId>org.jgroups</groupId>
 			<artifactId>jgroups</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>jtidy</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -190,24 +186,6 @@
 			<plugin>
 				<groupId>de.jflex</groupId>
 				<artifactId>jflex-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>docbook-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy-shared-docbook-resources</id>
-						<configuration>
-							<target>
-								<property name="documentation.directories" value=".,engine,misc,query,rdbms,schema" />
-								<ant antfile="../src/docbook/ant/build.xml" target="main" />
-							</target>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

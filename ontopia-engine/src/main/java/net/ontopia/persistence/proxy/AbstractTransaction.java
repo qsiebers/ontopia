@@ -110,15 +110,18 @@ public abstract class AbstractTransaction implements TransactionIF {
 
   @Override
   public boolean validate() {    
-    if (isclosed)
+    if (isclosed) {
       return false;
-    else
+    } else {
       return access.validate();
+    }
   }
 
   @Override
   public synchronized void begin() {
-    if (isclosed) throw new OntopiaRuntimeException("Cannot restart a closed transaction.");
+    if (isclosed) {
+      throw new OntopiaRuntimeException("Cannot restart a closed transaction.");
+    }
     this.isactive = true;
     // Notify transaction cache
     log.debug(getId() + ": Transaction started.");
@@ -126,7 +129,9 @@ public abstract class AbstractTransaction implements TransactionIF {
   
   @Override
   public synchronized void commit() {
-    if (!isactive) throw new OntopiaRuntimeException("Transaction is not active.");
+    if (!isactive) {
+      throw new OntopiaRuntimeException("Transaction is not active.");
+    }
     
     // Store transaction changes
     flush();
@@ -145,7 +150,9 @@ public abstract class AbstractTransaction implements TransactionIF {
   
   @Override
   public synchronized void abort() {
-    if (!isactive) throw new OntopiaRuntimeException("Transaction is not active.");
+    if (!isactive) {
+      throw new OntopiaRuntimeException("Transaction is not active.");
+    }
 
     // Rollback all changes
     transactionPreAbort();
@@ -162,7 +169,9 @@ public abstract class AbstractTransaction implements TransactionIF {
 
   @Override
   public synchronized void close() {
-    if (isclosed) throw new OntopiaRuntimeException("Transaction is already closed.");
+    if (isclosed) {
+      throw new OntopiaRuntimeException("Transaction is already closed.");
+    }
     // Note: access is closed here.
     access.close();
     
@@ -198,11 +207,12 @@ public abstract class AbstractTransaction implements TransactionIF {
   
   @Override
   public boolean isObjectLoaded(IdentityIF identity) {
-    if (!isactive && isaborted) { throw new TransactionNotActiveException(); }
     
     // check identity map
     synchronized (identity_map) { // read
-      if (checkIdentityMapNoLRU(identity) != null) return true;
+      if (checkIdentityMapNoLRU(identity) != null) {
+        return true;
+      }
     }
     
     // check to see if object is registered in cache
@@ -211,13 +221,16 @@ public abstract class AbstractTransaction implements TransactionIF {
   
   @Override
   public boolean isFieldLoaded(IdentityIF identity, int field) {
-    if (!isactive && isaborted) { throw new TransactionNotActiveException(); }
     
     // check identity map
     synchronized (identity_map) { // read
       PersistentIF p = checkIdentityMapNoLRU(identity);
-      if (p == null) return false;
-      if (p.isLoaded(field)) return true;
+      if (p == null) {
+        return false;
+      }
+      if (p.isLoaded(field)) {
+        return true;
+      }
     }
     
     // Check to see if field is registered in cache
@@ -226,7 +239,6 @@ public abstract class AbstractTransaction implements TransactionIF {
   
   @Override
   public <F> F loadField(IdentityIF identity, int field) {
-    if (!isactive && isaborted) { throw new TransactionNotActiveException(); }
     
     // NOTE: this methods is always called by a PersistentIF
     // NOTE: no need to check identity map first
@@ -239,8 +251,9 @@ public abstract class AbstractTransaction implements TransactionIF {
     
     // look up identity value    
     if (value != null) {
-      if (value instanceof IdentityIF)
+      if (value instanceof IdentityIF) {
         return (F) getObject((IdentityIF)value);
+      }
     }
     return (F) value;
   }
@@ -250,7 +263,7 @@ public abstract class AbstractTransaction implements TransactionIF {
    * committed merges. Default implementation is empty.
    * @param source The identity of the object merged into target
    * @param target The identity of the target object that was merged
-   * @since %NEXT%
+   * @since 5.4.0
    */
   public synchronized void objectMerged(IdentityIF source, IdentityIF target) {
     // does noting by default, see RWTransaction
@@ -268,15 +281,15 @@ public abstract class AbstractTransaction implements TransactionIF {
   @Override
   public PersistentIF getObject(IdentityIF identity, boolean acceptDeleted) {
     PersistentIF o = _getObject(identity);
-    if (o != null && o.isDeleted())
+    if (o != null && o.isDeleted()) {
       return (acceptDeleted ? o : null);
-    else
+    } else {
       return o;
+    }
   }
   
   @Override
   public PersistentIF _getObject(IdentityIF identity) {
-    if (!isactive && isaborted) { throw new TransactionNotActiveException(); }
     
     Objects.requireNonNull(identity, "null identities should not be looked up.");
     
@@ -303,11 +316,13 @@ public abstract class AbstractTransaction implements TransactionIF {
     // succeeded we know that the object exists in the data
     // repository. The identity will also be registered with the
     // appropriate access registrar.
-    if (!txncache.exists(access, identity))
+    if (!txncache.exists(access, identity)) {
       throw new IdentityNotFoundException(identity);
+    }
     
-    if (log.isDebugEnabled())
+    if (log.isDebugEnabled()) {
       log.debug(getId() + ": Identity found in data repository: " + identity);
+    }
     
     return checkIdentityMapAndCreateInstance(identity);
   }
@@ -425,8 +440,9 @@ public abstract class AbstractTransaction implements TransactionIF {
     identities = extractNonDirty(identities);
     
     // prefetch field values
-    if (log.isDebugEnabled())
+    if (log.isDebugEnabled()) {
       log.debug("Prefetching field: " + field + " " + type + " " + identities.size());
+    }
     this.txncache.prefetch(access, type, field, -1, traverse, identities);
   }
   
@@ -435,8 +451,9 @@ public abstract class AbstractTransaction implements TransactionIF {
     // bug #1439: do not prefetch if identity is altered by local transaction
     identities = extractNonDirty(identities);
     
-    if (log.isDebugEnabled())
+    if (log.isDebugEnabled()) {
       log.debug("Prefetching fields: " + StringUtils.join(fields, ",") + " " + type + " " + identities.size());
+    }
     ClassInfoIF cinfo = mapping.getClassInfo(type);
     for (int i=0; i < fields.length; i++) {
       // prefetch field values
@@ -445,7 +462,9 @@ public abstract class AbstractTransaction implements TransactionIF {
       int prefetched =  this.txncache.prefetch(access, type, fields[i], 
           (moreFields ? fields[i+1] : -1), 
           traverse[i], identities);
-      if (prefetched == 0) return;
+      if (prefetched == 0) {
+        return;
+      }
       // get next type
       if (moreFields) {
         // extract prefetched field values
@@ -463,7 +482,9 @@ public abstract class AbstractTransaction implements TransactionIF {
     for (IdentityIF identity : identities) {
       
       // bug #1439: do not prefetch if identity is altered by local transaction
-      if (!isObjectClean(identity)) continue;
+      if (!isObjectClean(identity)) {
+        continue;
+      }
       
       result.add(identity);
     }
@@ -475,14 +496,20 @@ public abstract class AbstractTransaction implements TransactionIF {
     for (IdentityIF identity : identities) {
       
       // bug #1439: do not prefetch if identity is altered by local transaction
-      if (!isObjectClean(identity)) continue;
+      if (!isObjectClean(identity)) {
+        continue;
+      }
       
       // get field value from cache
       Object value = txncache.getValue(access, identity, field);
-      if (value == null) continue;
+      if (value == null) {
+        continue;
+      }
       if (value instanceof Collection) {
         Collection coll = (Collection)value;
-        if (!coll.isEmpty()) result.addAll(coll);
+        if (!coll.isEmpty()) {
+          result.addAll(coll);
+        }
       } else {
         result.add(value);   
       }
@@ -496,7 +523,6 @@ public abstract class AbstractTransaction implements TransactionIF {
   
   @Override
   public Object executeQuery(String name, Object[] params) {
-    if (!isactive) throw new TransactionNotActiveException();
     
     try {
       // Look up query
@@ -515,7 +541,6 @@ public abstract class AbstractTransaction implements TransactionIF {
   
   @Override
   public QueryIF createQuery(JDOQuery jdoquery, boolean resolve_identities) {
-    if (!isactive) throw new TransactionNotActiveException();
     
     // FIXME: Move this method elsewhere?
     return access.createQuery(jdoquery, oaccess, registrar, resolve_identities);
@@ -532,8 +557,9 @@ public abstract class AbstractTransaction implements TransactionIF {
   }
   
   protected void registerQuery(String name, QueryIF query) {
-    if (log.isDebugEnabled())
+    if (log.isDebugEnabled()) {
       log.debug(getId() + ": Registering query '" + name + "'");
+    }
     querymap.put(name, query);
   }
   

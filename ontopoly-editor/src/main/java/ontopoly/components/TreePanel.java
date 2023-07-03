@@ -183,8 +183,9 @@ public abstract class TreePanel extends Panel {
   }
 
   protected void expandNode(AbstractTree tree, DefaultMutableTreeNode treeNode) {
-    if (treeNode.getParent() != null)
+    if (treeNode.getParent() != null) {
       expandNode(tree, (DefaultMutableTreeNode)treeNode.getParent());
+    }
     tree.getTreeState().expandNode(treeNode);
   }      
 
@@ -211,5 +212,5 @@ public abstract class TreePanel extends Panel {
       TreeNode treeNode = (TreeNode) model.getObject();
       return populateNode(id, treeNode);
     }
-  };
+  }
 }

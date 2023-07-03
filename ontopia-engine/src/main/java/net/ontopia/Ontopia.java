@@ -150,7 +150,7 @@ public final class Ontopia {
    * PUBLIC: Returns true if the product is a beta release.
    */
   public static boolean isBeta() {
-    return (beta_version <= 0 ? false : true);
+    return (beta_version > 0);
   }
 
   /**
@@ -233,9 +233,10 @@ public final class Ontopia {
     // Check to see if required classes get imported
     checkClasses();
 
-    if (System.getProperty("java.version").compareTo("1.7.0") < 0)
+    if (System.getProperty("java.version").compareTo("1.7.0") < 0) {
       throw new OntopiaRuntimeException("Java 1.7 or newer needed; running " +
 					System.getProperty("java.version"));
+    }
   }
 
   public static String getInfo() {  

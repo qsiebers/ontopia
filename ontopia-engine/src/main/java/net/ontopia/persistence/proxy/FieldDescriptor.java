@@ -41,16 +41,16 @@ public class FieldDescriptor {
 
   static {
     Set<Class<?>> pt = new HashSet<Class<?>>();
-    pt.add(java.lang.String.class);
+    pt.add(String.class);
     pt.add(java.io.Reader.class);
     pt.add(java.io.InputStream.class);
-    pt.add(java.lang.Long.class);
-    pt.add(java.lang.Integer.class);
-    pt.add(java.lang.Boolean.class);
-    pt.add(java.lang.Character.class);
-    pt.add(java.lang.Short.class);
-    pt.add(java.lang.Double.class);
-    pt.add(java.lang.Float.class);
+    pt.add(Long.class);
+    pt.add(Integer.class);
+    pt.add(Boolean.class);
+    pt.add(Character.class);
+    pt.add(Short.class);
+    pt.add(Double.class);
+    pt.add(Float.class);
     PRIMITIVE_TYPES = pt;
   }
   // -----------------------------------------------------------------------------
@@ -127,8 +127,9 @@ public class FieldDescriptor {
   public void setCardinality(int cardinality) {
     if (cardinality != ONE_TO_ONE &&
         cardinality != ONE_TO_MANY &&
-        cardinality != MANY_TO_MANY)
+        cardinality != MANY_TO_MANY) {
       throw new IllegalArgumentException("Invalid argument: " + cardinality);
+    }
     this.cardinality = cardinality;
   }
 
@@ -158,10 +159,11 @@ public class FieldDescriptor {
    * cardinality of 1:1 or 1:M).
    */
   public boolean isCollectionField() {
-    if (cardinality == ONE_TO_ONE)
+    if (cardinality == ONE_TO_ONE) {
       return false;
-    else
+    } else {
       return true;
+    }
   }
 
   /**
@@ -222,7 +224,9 @@ public class FieldDescriptor {
   public boolean isIdentityField() {
     FieldDescriptor[] fdescs = getClassDescriptor().getIdentityFields();
     for (int i=0; i < fdescs.length; i++) {
-      if (fdescs[i] == this) return true;
+      if (fdescs[i] == this) {
+        return true;
+      }
     }
     return false;
   }
@@ -253,10 +257,11 @@ public class FieldDescriptor {
    */
   public boolean isAggregateField() {
     ClassDescriptor cdesc = getValueClassDescriptor();
-    if (cdesc != null && cdesc.isAggregate())
+    if (cdesc != null && cdesc.isAggregate()) {
       return true;
-    else
+    } else {
       return false;
+    }
   }
   
   /**
@@ -340,10 +345,11 @@ public class FieldDescriptor {
    * stored.
    */
   public String getTable() {
-    if (jointable != null)
+    if (jointable != null) {
       return jointable;
-    else
+    } else {
       return getClassDescriptor().getMasterTable();
+    }
   }
 
   /**

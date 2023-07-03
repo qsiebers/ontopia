@@ -154,31 +154,50 @@ public class RDBMSTopicMapSource implements TopicMapSourceIF {
     this.propfile = propfile;
   }
   
+  /**
+   * PUBLIC: Sets an additional SQL queries file to be loaded. Can be
+   * used to override or extend the SQL query set used by Ontopia.
+   * Warning: overriding queries should only be done by experts.
+   * @param queryfile The file to load. Will be passed to 
+   * {@link StreamUtils#getInputStream(java.lang.String)}
+   * @since 5.4.0
+   */
   public void setQueryfile(String queryfile) {
     this.queryfile = queryfile;
   }
 
+  /**
+   * PUBLIC: returns the additional SQL query file set by 
+   * {@link #setQueryfile(java.lang.String)}.
+   * @return The query file set.
+   * @since 5.4.0
+   */
   public String getQueryfile() {
     return queryfile;
   }
 
   @Override
   public synchronized Collection<TopicMapReferenceIF> getReferences() {
-    if (!isInitialized()) refresh();
+    if (!isInitialized()) {
+      refresh();
+    }
     return refmap.values();
   }
 
   protected RDBMSStorage createStorage() throws IOException {
     if (storage == null) {
-      if (propfile != null)
+      if (propfile != null) {
         this.storage = new RDBMSStorage(propfile);
-      else if (properties != null)
+      } else if (properties != null) {
         this.storage = new RDBMSStorage(properties);
-      else
+      } else {
         throw new OntopiaRuntimeException("propertyFile property must be specified on source with id '" + getId() + "'.");
+      }
       if (queryfile != null) {
         InputStream stream = StreamUtils.getInputStream(queryfile);
-        if (stream == null) throw new IOException("Could not find query file " + queryfile);
+        if (stream == null) {
+          throw new IOException("Could not find query file " + queryfile);
+        }
         storage.getQueryDeclarations().loadQueries(stream);
       }  
     }
@@ -216,13 +235,15 @@ public class RDBMSTopicMapSource implements TopicMapSourceIF {
           }
         }
         
-        if (_title == null)
+        if (_title == null) {
           _title = referenceId;
+        }
         
         LocatorIF _base_address = this.base_address;
         if (_base_address == null) {
-          if (loc != null)
+          if (loc != null) {
             _base_address = new URILocator(loc);
+          }
         }
         
         // Create a new reference
@@ -230,8 +251,9 @@ public class RDBMSTopicMapSource implements TopicMapSourceIF {
         ref.setSource(this);
 
         // register topic listeners
-        if (topicListeners != null)
+        if (topicListeners != null) {
           ref.registerTopicListeners(topicListeners);
+        }
         
         newmap.put(referenceId, ref);
       }
@@ -254,7 +276,7 @@ public class RDBMSTopicMapSource implements TopicMapSourceIF {
     } catch (Exception e) {
       throw new OntopiaRuntimeException(e);
     } finally {
-      if (conn != null) try { conn.close(); } catch (Exception e) { };
+      if (conn != null) try { conn.close(); } catch (Exception e) { }
     }
   }
 
@@ -267,10 +289,11 @@ public class RDBMSTopicMapSource implements TopicMapSourceIF {
 
   
   protected String getReferenceId(String baseAdress, String title, long topicmap_id) {
-    if (id == null)
+    if (id == null) {
       return "RDBMS-" + topicmap_id;
-    else
+    } else {
       return id + "-" + topicmap_id;
+    }
   }
   
   protected RDBMSTopicMapReference createTopicMapReference(String referenceId, String title, RDBMSStorage storage, long topicmapId, LocatorIF baseAddress) {
@@ -305,8 +328,9 @@ public class RDBMSTopicMapSource implements TopicMapSourceIF {
 
   @Override
   public synchronized TopicMapReferenceIF createTopicMap(String name, String baseAddress) {
-    if (!supportsCreate())
+    if (!supportsCreate()) {
       throw new UnsupportedOperationException("This source does not support creating new topic maps.");
+    }
     // create topic map instance
     RDBMSTopicMapStore store = null;
     long topicmap_id = -1;
@@ -327,17 +351,22 @@ public class RDBMSTopicMapSource implements TopicMapSourceIF {
       ref.setSource(this);
 
       // register topic listeners
-      if (topicListeners != null)
+      if (topicListeners != null) {
         ref.registerTopicListeners(topicListeners);
+      }
       
-      if (refmap == null) refmap = new HashMap<String, TopicMapReferenceIF>();
+      if (refmap == null) {
+        refmap = new HashMap<String, TopicMapReferenceIF>();
+      }
       refmap.put(id, ref);
       return ref;
     
     } catch (Exception e) {
       throw new OntopiaRuntimeException(e);
     } finally {
-      if (store != null) store.close();
+      if (store != null) {
+        store.close();
+      }
     }
   }
 

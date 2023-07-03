@@ -444,7 +444,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
     
     List matches = new ArrayList();
-    addMatch(matches, "POS", new Integer(25));
+    addMatch(matches, "POS", 25);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -513,7 +513,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(0));
+    addMatch(matches, "N", 0);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -525,7 +525,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(5));
+    addMatch(matches, "N", 5);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -537,7 +537,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(8));
+    addMatch(matches, "N", 8);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -549,7 +549,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(2));
+    addMatch(matches, "N", 2);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -561,7 +561,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(2));
+    addMatch(matches, "N", 2);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -573,7 +573,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(1));
+    addMatch(matches, "N", 1);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -585,7 +585,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(1));
+    addMatch(matches, "N", 1);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -738,7 +738,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(0));
+    addMatch(matches, "N", 0);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -750,7 +750,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(5));
+    addMatch(matches, "N", 5);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -762,7 +762,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(8));
+    addMatch(matches, "N", 8);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -774,7 +774,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(5));
+    addMatch(matches, "N", 5);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -786,7 +786,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(15));
+    addMatch(matches, "N", 15);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -799,7 +799,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(4));
+    addMatch(matches, "N", 4);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -812,7 +812,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
 
     List matches = new ArrayList();
-    addMatch(matches, "N", new Integer(4));
+    addMatch(matches, "N", 4);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -916,16 +916,11 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
     
     List matches = new ArrayList();
-    addMatch(matches, "USER", getTopicById("gdm"),    "LENGTH", 
-        new Integer(12));
-    addMatch(matches, "USER", getTopicById("larsga"), "LENGTH", 
-        new Integer(19));
-    addMatch(matches, "USER", getTopicById("grove"),  "LENGTH", 
-        new Integer(15));
-    addMatch(matches, "USER", getTopicById("steve"),  "LENGTH", 
-        new Integer(12));
-    addMatch(matches, "USER", getTopicById("sylvia"), "LENGTH", 
-        new Integer(13));
+    addMatch(matches, "USER", getTopicById("gdm"),    "LENGTH", 12);
+    addMatch(matches, "USER", getTopicById("larsga"), "LENGTH", 19);
+    addMatch(matches, "USER", getTopicById("grove"),  "LENGTH", 15);
+    addMatch(matches, "USER", getTopicById("steve"),  "LENGTH", 12);
+    addMatch(matches, "USER", getTopicById("sylvia"), "LENGTH", 13);
     
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -1001,7 +996,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
     
     List matches = new ArrayList();
-    addMatch(matches, "L", new Integer(0));
+    addMatch(matches, "L", 0);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -1013,7 +1008,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
     
     List matches = new ArrayList();
-    addMatch(matches, "L", new Integer(1));
+    addMatch(matches, "L", 1);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -1025,7 +1020,7 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("bb-test.ltm");
     
     List matches = new ArrayList();
-    addMatch(matches, "L", new Integer(7));
+    addMatch(matches, "L", 7);
 
     assertQueryMatches(matches,
                 "import \"http://psi.ontopia.net/tolog/string/\" as str " +
@@ -1065,10 +1060,10 @@ public class StringModuleTest extends AbstractPredicateTest {
     load("int-occs.ltm");
     try {
       List matches = new ArrayList();
-      addMatch(matches, "VAL", "topic1", "LEN", new Integer(6));
-      addMatch(matches, "VAL", "topic2", "LEN", new Integer(6));
-      addMatch(matches, "VAL", "topic3", "LEN", new Integer(6));
-      addMatch(matches, "VAL", "topic4", "LEN", new Integer(6));
+      addMatch(matches, "VAL", "topic1", "LEN", 6);
+      addMatch(matches, "VAL", "topic2", "LEN", 6);
+      addMatch(matches, "VAL", "topic3", "LEN", 6);
+      addMatch(matches, "VAL", "topic4", "LEN", 6);
       assertQueryMatches(matches,
                   "import \"http://psi.ontopia.net/tolog/string/\" as str " +
                   "select $VAL, $LEN from " +
@@ -1544,8 +1539,9 @@ public class StringModuleTest extends AbstractPredicateTest {
         "str:substring($OUT, \"2007-03-12\", 4, 3)?");
       Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
     } catch (InvalidQueryException e) {
-      if (!e.getMessage().startsWith("The 3rd and 4th parameters to"))
+      if (!e.getMessage().startsWith("The 3rd and 4th parameters to")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1559,8 +1555,9 @@ public class StringModuleTest extends AbstractPredicateTest {
                   "str:substring(\"-03-12\", \"2007-03-12\", 4, 3)?");
       Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
     } catch (InvalidQueryException e) {
-      if (!e.getMessage().startsWith("The 3rd and 4th parameters to"))
+      if (!e.getMessage().startsWith("The 3rd and 4th parameters to")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1577,8 +1574,9 @@ public class StringModuleTest extends AbstractPredicateTest {
                   "str:substring(\"-03-12\", $ARG2, 4)?");
       Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
     } catch (InvalidQueryException e) {
-      if (!e.getMessage().startsWith("Variable $ARG2 not bound in predicate"))
+      if (!e.getMessage().startsWith("Variable $ARG2 not bound in predicate")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1592,8 +1590,9 @@ public class StringModuleTest extends AbstractPredicateTest {
                   "str:substring(\"-03-12\", \"2007-03-12\", $ARG3)?");
       Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
     } catch (InvalidQueryException e) {
-      if (!e.getMessage().startsWith("Variable $ARG3 not bound in predicate"))
+      if (!e.getMessage().startsWith("Variable $ARG3 not bound in predicate")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
   
@@ -1607,8 +1606,9 @@ public class StringModuleTest extends AbstractPredicateTest {
                     "str:substring(\"-03-12\", \"2007-03-12\", 4, $ARG4)?");
         Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
       } catch (InvalidQueryException e) {
-        if (!e.getMessage().startsWith("Variable $ARG4 not bound in predicate"))
+        if (!e.getMessage().startsWith("Variable $ARG4 not bound in predicate")) {
           Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+        }
       }
   }
   
@@ -1624,8 +1624,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring received class " +
                                      "java.lang.Integer as argument 1, " +
-                                     "but requires a string"))
+                                     "but requires a string")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
   
@@ -1641,8 +1642,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring received class " +
                                      "java.lang.Integer as argument 2, but " +
-                                     "requires a string"))
+                                     "requires a string")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1658,8 +1660,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring received a string " +
                                      "as argument 3, but requires class " +
-                                     "java.lang.Integer"))
+                                     "java.lang.Integer")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1675,8 +1678,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring received a string " +
                                      "as argument 4, but requires class " +
-                                     "java.lang.Integer"))
+                                     "java.lang.Integer")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1782,8 +1786,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring-after received " +
                                      "class java.lang.Integer as argument " +
-                                     "1, but requires a string"))
+                                     "1, but requires a string")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1799,8 +1804,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring-after received " +
                                      "class java.lang.Integer as argument " +
-                                     "2, but requires a string"))
+                                     "2, but requires a string")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1816,8 +1822,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring-after received " +
                                      "class java.lang.Integer as argument " +
-                                     "3, but requires a string"))
+                                     "3, but requires a string")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1834,8 +1841,9 @@ public class StringModuleTest extends AbstractPredicateTest {
                   "str:substring-after(\"07-03-12\", $ARG2, \"2007-03-12\")?");
       Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
     } catch (InvalidQueryException e) {
-      if (!e.getMessage().startsWith(""))
+      if (!e.getMessage().startsWith("")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
     
@@ -1852,8 +1860,9 @@ public class StringModuleTest extends AbstractPredicateTest {
                   "str:substring-after(\"2007-03-12\", \"20\", $ARG3)?");
       Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
     } catch (InvalidQueryException e) {
-      if (!e.getMessage().startsWith(""))
+      if (!e.getMessage().startsWith("")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 
@@ -1959,8 +1968,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring-before received " +
                                      "class java.lang.Integer as argument " +
-                                     "1, but requires a string"))
+                                     "1, but requires a string")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
   
@@ -1976,8 +1986,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring-before received " +
                                      "class java.lang.Integer as argument " +
-                                     "2, but requires a string"))
+                                     "2, but requires a string")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
   
@@ -1993,8 +2004,9 @@ public class StringModuleTest extends AbstractPredicateTest {
     } catch (InvalidQueryException e) {
       if (!e.getMessage().startsWith("Predicate substring-before " +
                                      "received class java.lang.Integer as " +
-                                     "argument 3, but requires a string"))
+                                     "argument 3, but requires a string")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
   
@@ -2011,8 +2023,9 @@ public class StringModuleTest extends AbstractPredicateTest {
                 "str:substring-before(\"07-03-12\", $ARG2, \"2007-03-12\")?");
       Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
     } catch (InvalidQueryException e) {
-      if (!e.getMessage().startsWith(""))
+      if (!e.getMessage().startsWith("")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
   
@@ -2029,8 +2042,9 @@ public class StringModuleTest extends AbstractPredicateTest {
                 "str:substring-before(\"2007-03-12\", \"20\", $ARG3)?");
       Assert.fail("Expected InvalidQueryException, but got no Exception at all.");
     } catch (InvalidQueryException e) {
-      if (!e.getMessage().startsWith(""))
+      if (!e.getMessage().startsWith("")) {
         Assert.fail("Wrong error message: \"" + e.getMessage() + "\"");
+      }
     }
   }
 

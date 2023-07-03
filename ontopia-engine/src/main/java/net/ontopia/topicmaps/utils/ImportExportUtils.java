@@ -72,6 +72,7 @@ public class ImportExportUtils {
   /**
    * Returns the loaded ImportExportServiceIF services.
    * @return the loaded ImportExportServiceIF services.
+   * @since 5.4.0
    */
   @SuppressWarnings("unchecked")
   public static Set<ImportExportServiceIF> getServices() {
@@ -177,15 +178,16 @@ public class ImportExportUtils {
    */
   public static long getTopicMapId (String address) {
     int offset = 0;
-    if (address.startsWith("M"))
+    if (address.startsWith("M")) {
       offset = 1;
-    else if (address.startsWith(ONTOPIA_RDBMS_URI_PREFIX)) {
+    } else if (address.startsWith(ONTOPIA_RDBMS_URI_PREFIX)) {
       // Syntax: x-ontopia:tm-rdbms:12345
       offset = ONTOPIA_RDBMS_URI_PREFIX.length ();
       
       // Ignore M suffix on topic map id
-      if (address.charAt (offset) == 'M')
+      if (address.charAt (offset) == 'M') {
         offset = offset + 1;
+      }
     }
     
     try {

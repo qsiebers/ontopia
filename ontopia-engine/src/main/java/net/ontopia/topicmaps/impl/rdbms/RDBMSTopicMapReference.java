@@ -72,8 +72,9 @@ public class RDBMSTopicMapReference extends AbstractTopicMapReference {
     RDBMSTopicMapStore store = new RDBMSTopicMapStore(storage, topicmap_id);
     store.setReadOnly(readonly);
     store.setReference(RDBMSTopicMapReference.this);
-    if (base_address != null)
+    if (base_address != null) {
       store.setBaseAddressOverride(base_address);
+    }
     return store;    
   }
 
@@ -86,68 +87,80 @@ public class RDBMSTopicMapReference extends AbstractTopicMapReference {
       }
     };
 
-    // initialize pool
-    this.ofactory = new StorePoolableObjectFactory(sfactory);
-    this.pool = new GenericObjectPool(ofactory);
-    this.pool.setTestOnBorrow(true);
-
     Map<String, String> properties = storage.getProperties();
     if (properties != null) {
-      // Set minimum pool size (default: 0)
-      String _minsize = PropertyUtils.getProperty(properties,
-          "net.ontopia.topicmaps.impl.rdbms.StorePool.MinimumSize", false);
-      int minsize = (_minsize == null ? 0 : Integer.parseInt(_minsize));
-      log.debug("Setting StorePool.MinimumSize '" + minsize + "'");
-      pool.setMinIdle(minsize); // 0 = no limit
+      if (PropertyUtils.isTrue("net.ontopia.topicmaps.impl.rdbms.StorePool", false)) {
+        log.warn("[DEPRECATED] Using Store pooling has been deprecated as it malfunctions in multithreaded environments");
 
-      // Set maximum pool size (default: Integer.MAX_VALUE)
-      String _maxsize = PropertyUtils.getProperty(properties,
-          "net.ontopia.topicmaps.impl.rdbms.StorePool.MaximumSize", false);
-      int maxsize = (_maxsize == null ? 8 : Integer.parseInt(_maxsize));
-      log.debug("Setting StorePool.MaximumSize '" + maxsize + "'");
-      pool.setMaxActive(maxsize); // 0 = no limit
+        // initialize pool
+        this.ofactory = new StorePoolableObjectFactory(sfactory);
+        this.pool = new GenericObjectPool(ofactory);
+        this.pool.setTestOnBorrow(true);
 
-      // Set soft maximum - emergency objects (default: false)
-      boolean softmax = MapUtils.getBoolean(properties, "net.ontopia.topicmaps.impl.rdbms.StorePool.SoftMaximum", false);
-      log.debug("Setting StorePool.SoftMaximum '" + softmax + "'");
-      if (softmax)
-        pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
-      else
-        pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_BLOCK);
-      
-      // EXPERIMENTAL!
-      String _etime = PropertyUtils.getProperty(properties, "net.ontopia.topicmaps.impl.rdbms.StorePool.IdleTimeout", false);
-      int etime = (_etime == null ? -1 : Integer.parseInt(_etime));
-      pool.setTimeBetweenEvictionRunsMillis(etime);
-      pool.setSoftMinEvictableIdleTimeMillis(etime);
+        // Set minimum pool size (default: 0)
+        String _minsize = PropertyUtils.getProperty(properties,
+            "net.ontopia.topicmaps.impl.rdbms.StorePool.MinimumSize", false);
+        int minsize = (_minsize == null ? 0 : Integer.parseInt(_minsize));
+        log.debug("Setting StorePool.MinimumSize '" + minsize + "'");
+        pool.setMinIdle(minsize); // 0 = no limit
+
+        // Set maximum pool size (default: Integer.MAX_VALUE)
+        String _maxsize = PropertyUtils.getProperty(properties,
+            "net.ontopia.topicmaps.impl.rdbms.StorePool.MaximumSize", false);
+        int maxsize = (_maxsize == null ? 8 : Integer.parseInt(_maxsize));
+        log.debug("Setting StorePool.MaximumSize '" + maxsize + "'");
+        pool.setMaxActive(maxsize); // 0 = no limit
+
+        // Set soft maximum - emergency objects (default: false)
+        boolean softmax = MapUtils.getBoolean(properties, "net.ontopia.topicmaps.impl.rdbms.StorePool.SoftMaximum", false);
+        log.debug("Setting StorePool.SoftMaximum '" + softmax + "'");
+        if (softmax) {
+          pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
+        } else {
+          pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_BLOCK);
+        }
+
+        // EXPERIMENTAL!
+        String _etime = PropertyUtils.getProperty(properties, "net.ontopia.topicmaps.impl.rdbms.StorePool.IdleTimeout", false);
+        int etime = (_etime == null ? -1 : Integer.parseInt(_etime));
+        pool.setTimeBetweenEvictionRunsMillis(etime);
+        pool.setSoftMinEvictableIdleTimeMillis(etime);
+
+        // allow the user to fully overwrite exhausted options
+        String _whenExhaustedAction = PropertyUtils.getProperty(properties, "net.ontopia.topicmaps.impl.rdbms.StorePool.WhenExhaustedAction", false);
+        if (EXHAUSED_BLOCK.equals(_whenExhaustedAction)) {
+          pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_BLOCK);
+        }
+        if (EXHAUSED_GROW.equals(_whenExhaustedAction)) {
+          pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
+        }
+        if (EXHAUSED_FAIL.equals(_whenExhaustedAction)) {
+          pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_FAIL);
+        }
+
+        if (pool.getWhenExhaustedAction() == GenericObjectPool.WHEN_EXHAUSTED_BLOCK) {
+          log.debug("Pool is set to block on exhaused");
+        }
+        if (pool.getWhenExhaustedAction() == GenericObjectPool.WHEN_EXHAUSTED_GROW) {
+          log.debug("Pool is set to grow on exhaused");
+        }
+        if (pool.getWhenExhaustedAction() == GenericObjectPool.WHEN_EXHAUSTED_FAIL) {
+          log.debug("Pool is set to fail on exhaused");
+        }
+      }
     }
-
-    // allow the user to fully overwrite exhausted options
-    String _whenExhaustedAction = PropertyUtils.getProperty(properties, "net.ontopia.topicmaps.impl.rdbms.StorePool.WhenExhaustedAction", false);
-    if (EXHAUSED_BLOCK.equals(_whenExhaustedAction))
-      pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_BLOCK);
-    if (EXHAUSED_GROW.equals(_whenExhaustedAction))
-      pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_GROW);
-    if (EXHAUSED_FAIL.equals(_whenExhaustedAction))
-      pool.setWhenExhaustedAction(GenericObjectPool.WHEN_EXHAUSTED_FAIL);
-
-    if (pool.getWhenExhaustedAction() == GenericObjectPool.WHEN_EXHAUSTED_BLOCK)
-      log.debug("Pool is set to block on exhaused");
-    if (pool.getWhenExhaustedAction() == GenericObjectPool.WHEN_EXHAUSTED_GROW)
-      log.debug("Pool is set to grow on exhaused");
-    if (pool.getWhenExhaustedAction() == GenericObjectPool.WHEN_EXHAUSTED_FAIL)
-      log.debug("Pool is set to fail on exhaused");
-
   }
 
   @Override
   public synchronized void open() {
     // ignore if already open
-    if (isOpen())
+    if (isOpen()) {
       return;
-    if (isDeleted())
+    }
+    if (isDeleted()) {
       throw new StoreDeletedException(
           "Topic map has been deleted through this reference.");
+    }
     // initialize reference
     init();
     this.isopen = true;
@@ -155,16 +168,24 @@ public class RDBMSTopicMapReference extends AbstractTopicMapReference {
 
   @Override
   public synchronized TopicMapStoreIF createStore(boolean readonly) {
-    if (!isOpen())
+    if (!isOpen()) {
       open();
+    }
+
+    if (pool == null) {
+      RDBMSTopicMapStore store = _createStore(readonly);
+      store.setTopicListeners(getTopicListeners());
+      return store;
+    }
+
     log.debug("RTR: borrow " + getId() + " i: " + pool.getNumIdle() + " a: "
         + pool.getNumActive());
     try {
 
       if (readonly) {
-       if (rostore == null) 
+       if (rostore == null) { 
          rostore = _createStore(true);
-       else {
+       } else {
          boolean valid = rostore.validate();
          if (!valid) {
            try { rostore.close(); } catch (Exception e) { }
@@ -254,9 +275,10 @@ public class RDBMSTopicMapReference extends AbstractTopicMapReference {
 
   @Override
   public synchronized void clear() {
-    if (isDeleted())
+    if (isDeleted()) {
       throw new StoreDeletedException(
           "Topic map has been deleted through this reference.");
+    }
 
     // close reference
     close();
@@ -268,20 +290,24 @@ public class RDBMSTopicMapReference extends AbstractTopicMapReference {
       store.clear();
       store.commit();
     } finally {
-      if (store.isOpen())
+      if (store.isOpen()) {
         store.close();
+      }
     }
   }
 
   @Override
   public synchronized void delete() {
-    if (source == null)
+    if (source == null) {
       throw new UnsupportedOperationException("This reference cannot be deleted as it does not belong to a source.");
-    if (!source.supportsDelete())
+    }
+    if (!source.supportsDelete()) {
       throw new UnsupportedOperationException("This reference cannot be deleted as the source does not allow deleting.");
+    }
     // ignore if store already deleted
-    if (isDeleted())
+    if (isDeleted()) {
       return;
+    }
 
     // close reference
     close();
@@ -324,9 +350,11 @@ public class RDBMSTopicMapReference extends AbstractTopicMapReference {
       }
     } else {
       // pool has been closed before store, so we should close store ourselves
+      // or there is no pool
       synchronized (store) {
-        if (store.isOpen())
+        if (store.isOpen()) {
           ((RDBMSTopicMapStore)store).close(false);
+        }
       }
     }
   }

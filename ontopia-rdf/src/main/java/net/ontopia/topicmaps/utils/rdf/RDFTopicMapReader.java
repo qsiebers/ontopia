@@ -221,16 +221,18 @@ public class RDFTopicMapReader implements TopicMapReaderIF {
         RDFToTopicMapConverter.convert(infileurl, syntax, mappingurl == null ? null : mappingurl.toString(), 
                                        mappingsyntax, topicmap, lenient);
       }
-      if (generate_names)
+      if (generate_names) {
         RDFToTopicMapConverter.generateNames(topicmap);
+      }
     } catch (URISyntaxException e) {
       throw new IOException(e);
     } catch (JenaException e) {
       throw new OntopiaRuntimeException(e);
     }
 
-    if (duplicate_suppression)
+    if (duplicate_suppression) {
       DuplicateSuppressionUtils.removeDuplicates(topicmap);
+    }
   }
 
   /**

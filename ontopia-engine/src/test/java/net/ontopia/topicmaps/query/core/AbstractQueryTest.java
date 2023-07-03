@@ -78,8 +78,9 @@ public abstract class AbstractQueryTest {
   }
 
   protected void closeStore() {
-    if (topicmap != null)
+    if (topicmap != null) {
       topicmap.getStore().close();
+    }
     base = null;
     topicmap = null;
     builder = null;
@@ -101,8 +102,9 @@ public abstract class AbstractQueryTest {
     base = new URILocator(file);
 
     TopicMapReaderIF importer = ImportExportUtils.getReader(file.toString());
-    if (importer instanceof XTMTopicMapReader)
+    if (importer instanceof XTMTopicMapReader) {
       ((XTMTopicMapReader) importer).setValidation(false);
+    }
     importer.importInto(topicmap);
 
     if (fulltext) {
@@ -212,14 +214,16 @@ public abstract class AbstractQueryTest {
 
     matches = new ArrayList(matches); // avoid modifying caller's list
     
-    if (ruleset != null)
+    if (ruleset != null) {
       processor.load(ruleset);
+    }
 
     QueryResultIF result = null;
-    if (args != null) 
+    if (args != null) { 
       result = processor.parse(query).execute(args);
-    else
+    } else {
       result = processor.execute(query);
+    }
 
     //! System.out.println("____QUERY: " + query);
     //! System.out.println("    MATCHES: " + matches);
@@ -261,14 +265,16 @@ public abstract class AbstractQueryTest {
 
     matches = new ArrayList(matches); // avoid modifying caller's list
     
-    if (ruleset != null)
+    if (ruleset != null) {
       processor.load(ruleset);
+    }
 
     QueryResultIF result = null;
-    if (args != null) 
+    if (args != null) { 
       result = processor.parse(query).execute(args);
-    else
+    } else {
       result = processor.execute(query);
+    }
 
     //! System.out.println("____QUERY: " + query);
     //! System.out.println("    MATCHES: " + matches);
@@ -325,8 +331,9 @@ public abstract class AbstractQueryTest {
     QueryResultIF result = processor.execute(query);
     try {
       while (result.next()) {
-        if (matches.size() <= pos)
+        if (matches.size() <= pos) {
           Assert.fail("too many rows in query result");
+        }
         
         Map match = getMatch(result);
         Assert.assertTrue("match not found in position " +  pos + ": " + match + " => " + matches.get(pos),
@@ -416,7 +423,9 @@ public abstract class AbstractQueryTest {
       Assert.fail("query '" + query + "' parsed OK, but shouldn't have");
     } catch (InvalidQueryException e) {
     } finally {
-      if (result != null) result.close();
+      if (result != null) {
+        result.close();
+      }
     }
   }
   
@@ -435,8 +444,9 @@ public abstract class AbstractQueryTest {
 
   public Set getMatchSet(QueryResultIF result) {
     Set match = new HashSet();
-    for (int ix = 0; ix < result.getWidth(); ix++) 
+    for (int ix = 0; ix < result.getWidth(); ix++) {
       match.add(result.getValue(ix));
+    }
     return match;
   }
 

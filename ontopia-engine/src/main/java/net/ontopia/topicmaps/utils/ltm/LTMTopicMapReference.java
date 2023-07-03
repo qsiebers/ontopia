@@ -42,9 +42,10 @@ public class LTMTopicMapReference extends AbstractOntopolyURLReference {
 
   @Override
   public TopicMapReaderIF getImporter() {
-    if (base_address == null)
+    if (base_address == null) {
       return new LTMTopicMapReader(url);
-    else
-      return new LTMTopicMapReader(url, base_address);      
+    } else {
+      return new LTMTopicMapReader(url, base_address);
+    }
   }
 }

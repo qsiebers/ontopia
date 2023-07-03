@@ -29,7 +29,7 @@ import net.ontopia.persistence.proxy.FieldHandlerIF;
 
 public class SQLFunction implements SQLValueIF {
 
-  protected static final Class DEFAULT_VALUE_TYPE = java.lang.String.class;  
+  protected static final Class DEFAULT_VALUE_TYPE = String.class;  
   protected static final FieldHandlerIF DEFAULT_FIELD_HANDLER = new DefaultFieldHandler(java.sql.Types.VARCHAR);
   
   protected String name;
@@ -43,8 +43,9 @@ public class SQLFunction implements SQLValueIF {
   public SQLFunction(String name, SQLValueIF[] args) {
     // Check arities
     for (int i=0; i < args.length; i++) {
-      if (args[i].getArity() != 1)
-	throw new IllegalArgumentException("Arity of function argument call must be 1: " + args[i]);
+      if (args[i].getArity() != 1) {
+        throw new IllegalArgumentException("Arity of function argument call must be 1: " + args[i]);
+      }
     }
 
     this.name = name;
@@ -123,7 +124,9 @@ public class SQLFunction implements SQLValueIF {
     StringBuilder sb = new StringBuilder();
     sb.append(name).append('(');
     for (int i=0; i < args.length; i++) {
-      if (i > 0) sb.append(", ");
+      if (i > 0) {
+        sb.append(", ");
+      }
       sb.append(args[i]);
     }
     sb.append(')');

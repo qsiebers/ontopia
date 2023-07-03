@@ -23,8 +23,6 @@ package net.ontopia.topicmaps.impl.rdbms;
 import java.io.Reader;
 import java.util.Collection;
 import net.ontopia.infoset.core.LocatorIF;
-import net.ontopia.infoset.impl.basic.URILocator;
-import net.ontopia.topicmaps.core.DataTypes;
 import net.ontopia.topicmaps.core.ReadOnlyException;
 import net.ontopia.topicmaps.core.TopicIF;
 import net.ontopia.topicmaps.core.TopicNameIF;
@@ -66,8 +64,9 @@ public class ReadOnlyVariantName extends ReadOnlyTMObject implements VariantName
   @Override
   public TopicIF getTopic() {
     TopicNameIF name = getTopicName();
-    if (name == null)
+    if (name == null) {
       return null;
+    }
     return name.getTopic();
   }
 
@@ -91,11 +90,6 @@ public class ReadOnlyVariantName extends ReadOnlyTMObject implements VariantName
   }
 
   @Override
-  public void setValue(String value) {
-    setValue(value, DataTypes.TYPE_STRING);
-  }
-
-  @Override
   public void setValue(String value, LocatorIF datatype) {
     throw new ReadOnlyException();
   }
@@ -111,13 +105,6 @@ public class ReadOnlyVariantName extends ReadOnlyTMObject implements VariantName
   }
   
   @Override
-  public LocatorIF getLocator() {
-    if (!DataTypes.TYPE_URI.equals(getDataType())) return null;
-    String value = getValue();
-    return (value == null ? null : URILocator.create(value));
-  }
-  
-  @Override
   public void setLocator(LocatorIF locator) {
     throw new ReadOnlyException();
   }
@@ -126,10 +113,11 @@ public class ReadOnlyVariantName extends ReadOnlyTMObject implements VariantName
   public long getLength() {
     Number length = this.<Number>loadField(VariantName.LF_length);
     long len = (length == null ? 0 : length.longValue());
-    if (len < 0)
+    if (len < 0) {
       return len * -1L;
-    else
+    } else {
       return len;
+    }
   }
 
   // ---------------------------------------------------------------------------

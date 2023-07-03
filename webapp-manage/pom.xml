@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>net.ontopia</groupId>
 		<artifactId>ontopia-parent</artifactId>
-		<version>5.3.1-SNAPSHOT</version>
+		<version>5.4.1-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>webapp-manager</artifactId>
@@ -17,6 +17,11 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>ontopia-navigator</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>ontopia-deprecated-utils</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

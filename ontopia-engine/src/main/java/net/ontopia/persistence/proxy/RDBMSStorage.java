@@ -58,7 +58,6 @@ import net.ontopia.topicmaps.impl.rdbms.RDBMSTopicMapReference;
 import net.ontopia.utils.OntopiaRuntimeException;
 import net.ontopia.utils.PropertyUtils;
 import net.ontopia.utils.StreamUtils;
-import org.apache.commons.dbcp.DelegatingConnection;
 import org.apache.commons.lang3.StringUtils;
 import org.jgroups.util.DefaultThreadFactory;
 import org.slf4j.Logger;
@@ -109,6 +108,7 @@ public class RDBMSStorage implements StorageIF {
     known_properties.add("net.ontopia.topicmaps.impl.rdbms.Password");
     known_properties.add("net.ontopia.topicmaps.impl.rdbms.Platforms");
     known_properties.add("net.ontopia.topicmaps.impl.rdbms.QueriesFile");
+    known_properties.add("net.ontopia.topicmaps.impl.rdbms.StorePool");
     known_properties.add("net.ontopia.topicmaps.impl.rdbms.StorePool.MaximumSize");
     known_properties.add("net.ontopia.topicmaps.impl.rdbms.StorePool.MinimumSize");
     known_properties.add("net.ontopia.topicmaps.impl.rdbms.StorePool.SoftMaximum");
@@ -186,10 +186,12 @@ public class RDBMSStorage implements StorageIF {
     
     // Load properties from file
     InputStream istream = StreamUtils.getInputStream(propfile);
-    if (istream == null)
+    if (istream == null) {
       throw new OntopiaRuntimeException("Property file '" + propfile + "' was not found.");
-    if (log.isDebugEnabled())
+    }
+    if (log.isDebugEnabled()) {
       log.info("Loading properties file from: "  + propfile);
+    }
     init(PropertyUtils.toMap(PropertyUtils.loadProperties(istream)));
   }
   
@@ -226,14 +228,16 @@ public class RDBMSStorage implements StorageIF {
     // Get mapping.xml file 
     InputStream mstream = getInputStream("net.ontopia.topicmaps.impl.rdbms.MappingFile", 
         "mapping.xml");    
-    if (mstream == null)
+    if (mstream == null) {
       throw new OntopiaRuntimeException("Object-relational mapping file 'mapping.xml' cannot be found.");
+    }
     
     // Get queries.xml file
     InputStream qstream = getInputStream("net.ontopia.topicmaps.impl.rdbms.QueriesFile", 
         "queries.xml");
-    if (qstream == null)
+    if (qstream == null) {
       throw new OntopiaRuntimeException("Built-in queries file 'queries.xml' cannot be found.");
+    }
     
     // Read configuration files
     this.mapping = new RDBMSMapping(new ObjectRelationalMapping(mstream));
@@ -264,8 +268,9 @@ public class RDBMSStorage implements StorageIF {
 
     // Get database
     this.database = getProperty("net.ontopia.topicmaps.impl.rdbms.Database");
-    if (this.database == null)
+    if (this.database == null) {
       throw new OntopiaRuntimeException("The property 'net.ontopia.topicmaps.impl.rdbms.Database' is not set.");
+    }
     
     // Get platforms
     String _platforms = getProperty("net.ontopia.topicmaps.impl.rdbms.Platforms");
@@ -350,8 +355,9 @@ public class RDBMSStorage implements StorageIF {
         throw new OntopiaRuntimeException("Not able to figure out cluster type from cluster id: " + clusterId);
       }
     }
-    if (this.caches == null)
+    if (this.caches == null) {
       this.caches = new DefaultCaches();
+    }
     
     
     // initialize shared cache
@@ -383,8 +389,9 @@ public class RDBMSStorage implements StorageIF {
     }
 
     // join cluster
-    if (this.cluster != null)
+    if (this.cluster != null) {
       this.cluster.join();
+    }
   }
   
   @Override
@@ -412,10 +419,11 @@ public class RDBMSStorage implements StorageIF {
   
   public String getProperty(String property, String default_value) {
     String propval = properties.get(property);
-    if (propval == null)
+    if (propval == null) {
       return default_value;
-    else
+    } else {
       return propval;
+    }
   }
   
   public StorageAccessIF createAccess(boolean readonly) {
@@ -427,10 +435,11 @@ public class RDBMSStorage implements StorageIF {
   @Override
   public TransactionIF createTransaction(boolean readonly) {
     AbstractTransaction transaction;
-    if (readonly)
+    if (readonly) {
       transaction = new ROTransaction(createAccess(readonly));
-    else
+    } else {
       transaction= new RWTransaction(createAccess(readonly));
+    }
 
     synchronized (transactions) {
       transactions.add(transaction);
@@ -486,10 +495,18 @@ public class RDBMSStorage implements StorageIF {
         log.error("Could not deregister from cluster.", t);
       }
     }
-    if (scache != null) scache.close();
-    if (saccess != null) saccess.close();
-    if (rw_connfactory != null) rw_connfactory.close();
-    if (ro_connfactory != null) ro_connfactory.close();
+    if (scache != null) {
+      scache.close();
+    }
+    if (saccess != null) {
+      saccess.close();
+    }
+    if (rw_connfactory != null) {
+      rw_connfactory.close();
+    }
+    if (ro_connfactory != null) {
+      ro_connfactory.close();
+    }
   }
   
   // -----------------------------------------------------------------------------
@@ -498,7 +515,9 @@ public class RDBMSStorage implements StorageIF {
 
   @Override
   public void notifyCluster() {
-    if (cluster != null) cluster.flush();
+    if (cluster != null) {
+      cluster.flush();
+    }
   }
   
   // -----------------------------------------------------------------------------
@@ -607,11 +626,13 @@ public class RDBMSStorage implements StorageIF {
   protected QueryDescriptor getQueryDescriptor(String name) {
     // Lookup query descriptor
     QueryDescriptor qdesc = queries.getQueryDescriptor(name);
-    if (qdesc == null)
+    if (qdesc == null) {
       throw new OntopiaRuntimeException("No query with the name " + name + " found.");
+    }
     
-    if (log.isDebugEnabled())
-      log.debug("Generating query '" + name + "' from descriptor.");
+    if (log.isDebugEnabled()) {
+     log.debug("Generating query '" + name + "' from descriptor.");
+    }
     
     return qdesc;
   }
@@ -631,16 +652,18 @@ public class RDBMSStorage implements StorageIF {
     SQLQuery sqlquery = sqlbuilder.makeQuery(jdoquery, oaccess);
     
     boolean debug = log.isDebugEnabled();
-    if (debug)
+    if (debug) {
       log.debug("SQL1: " + sqlquery + " [width=" + sqlquery.getWidth() + "]");
+    }
     //! System.out.println("SQL1: " + sqlquery + " [width=" + sqlquery.getWidth() + "]");
     
     sqlquery = new RedundantTablesSQLOptimizer().optimize(sqlquery);
     sqlquery = new EqualsSQLOptimizer().optimize(sqlquery);
     
     SQLStatementIF stm = sqlgen.createSQLStatement(sqlquery);
-    if (debug)
+    if (debug) {
       log.debug("SQL2: " + stm + " [width=" + stm.getWidth() + "]");
+    }
     //! System.out.println("SQL2: " + stm + " [width=" + stm.getWidth() + "]");
     
     stm.setObjectAccess(oaccess);
@@ -766,10 +789,11 @@ public class RDBMSStorage implements StorageIF {
       if ("net.ontopia.topicmaps.impl.rdbms.Password".equals(prop)) {
         out.write("<b>" + prop + "</b>=(<i>hidden for security reasons</i>)<br>\n");
       } else {
-        if (known_properties.contains(prop)) 
+        if (known_properties.contains(prop)) { 
           out.write("<b>" + prop + "</b>=" + properties.get(prop) + "<br>\n");
-        else
+        } else {
           out.write(prop + "=" + properties.get(prop) + "<br>\n");
+        }
       }
     }
   }
@@ -779,7 +803,7 @@ public class RDBMSStorage implements StorageIF {
    * @param source Identity of the merge source object
    * @param target Identity of the merge target object
    * @param cause The transaction that committed the merge
-   * @since %NEXT%
+   * @since 5.4.0
    */
   public synchronized void objectMerged(IdentityIF source, IdentityIF target, AbstractTransaction cause) {
     // block other transactons until we have processed the merge
@@ -800,13 +824,13 @@ public class RDBMSStorage implements StorageIF {
 
   /**
    * INTERNAL: exposes the set of active transactions.
-   * @since %NEXT%
+   * @since 5.4.0
    */
   public Set<AbstractTransaction> getTransactions() {
     return transactions;
   }
 
-  protected synchronized Connection getNonTransactionalReadConnection() {
+  protected Connection getNonTransactionalReadConnection() {
     if (!nonTransactionalReadAllowed) {
       throw new TransactionNotActiveException();
     }
@@ -819,25 +843,22 @@ public class RDBMSStorage implements StorageIF {
         if (connection != null) {
           if (connection.isClosed()) {
             nonTransactionalReadConnections.remove(thread);
-            // boem
           } else {
             connection.touch();
-            return connection;
+            return connection.connection;
           }
         }
-      }
-      connection = new NonTransactionalReadConnection(getConnectionFactory(true).requestConnection());
+        connection = new NonTransactionalReadConnection(getConnectionFactory(true).requestConnection());
 
-      synchronized (nonTransactionalReadConnections) {
         nonTransactionalReadConnections.put(thread, connection);
-      }
 
-      new NonTransactionalReadConnectionCleanup(connection, thread);
+        new NonTransactionalReadConnectionCleanup(connection, thread);
+      }
     } catch (SQLException e) {
       throw new OntopiaRuntimeException(e);
     }
-    log.debug("Requested NonTransactionalRead connection " + Integer.toHexString(connection.hashCode()) + " for " + thread);
-    return connection;
+    log.debug("Requested NonTransactionalRead connection " + connection.id + " for " + thread);
+    return connection.connection;
   }
 
   protected void touch(Connection connection) {
@@ -859,10 +880,11 @@ public class RDBMSStorage implements StorageIF {
 
     @Override
     public NonTransactionalReadConnection call() throws Exception {
-      if (!connection.isClosed() && thread.isAlive() && connection.lastUsed() > 0) {
-        long timeout = connection.lastUsed() + TimeUnit.SECONDS.toMillis(nonTransactionalReadConnectionTimeout);
+      if (!connection.isClosed() && thread.isAlive() && connection.getLastUsed() > 0) {
+        long timeout = connection.getLastUsed() + TimeUnit.SECONDS.toMillis(nonTransactionalReadConnectionTimeout);
         if (timeout > System.currentTimeMillis()) {
-          log.debug("NonTransactionalRead connection {} was used, resetting timeout for {}", Integer.toHexString(connection.hashCode()), thread);
+          log.debug("NonTransactionalRead connection {} was used, resetting timeout for {}", connection.id, thread);
+          connection.resetLastUsed();
           nonTransactionalReadConnectionTimer.schedule(this, nonTransactionalReadConnectionTimeout, TimeUnit.SECONDS);
           return connection;
         }
@@ -872,37 +894,48 @@ public class RDBMSStorage implements StorageIF {
     }
 
     private void clean() {
-      log.debug("Closing NonTransactionalRead connection {} for {}", Integer.toHexString(connection.hashCode()), thread);
-      try {
-          connection.close();
-      } catch (SQLException e) {
-        throw new OntopiaRuntimeException(e);
-      } finally {
-        synchronized (nonTransactionalReadConnections) {
+      synchronized (nonTransactionalReadConnections) {
+        log.debug("Closing NonTransactionalRead connection {} for {}", connection.id, thread);
+        try {
+            connection.close();
+        } catch (SQLException e) {
+          throw new OntopiaRuntimeException(e);
+        } finally {
           nonTransactionalReadConnections.remove(thread);
         }
       }
     }
   }
 
-  private class NonTransactionalReadConnection extends DelegatingConnection {
+  private class NonTransactionalReadConnection {
+    private final Connection connection;
+    private final String id;
+    private long lastUsed = 0;
 
-    public NonTransactionalReadConnection(Connection c) {
-      super(c);
+    public NonTransactionalReadConnection(Connection connection) {
+      this.connection = connection;
+      this.id = Integer.toHexString(connection.hashCode());
     }
 
     private void touch() {
-      setLastUsed();
+      lastUsed = System.currentTimeMillis();
+    }
+    
+    private long getLastUsed() {
+      return lastUsed;
     }
 
-    private long lastUsed() {
-      return getLastUsed();
+    private void resetLastUsed() {
+      lastUsed = 0;
     }
 
-    @Override
-    public void close() throws SQLException {
-      // skip passivate, as it registers as 'already closed', blocking the return to the pool
-      getDelegate().close();
+    private void close() throws SQLException {
+      connection.rollback();
+      connection.close();
+    }
+    
+    private boolean isClosed() throws SQLException {
+      return connection.isClosed();
     }
   }
 }

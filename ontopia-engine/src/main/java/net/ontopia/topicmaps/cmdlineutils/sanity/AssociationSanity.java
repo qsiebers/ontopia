@@ -97,11 +97,11 @@ public class AssociationSanity {
         Integer tempint = (Integer)numberOfDuplicates.get(key);
         if (tempint == null){
           //first occurrences of this duplicate Association.
-          numberOfDuplicates.put(key, new Integer(2));
+          numberOfDuplicates.put(key, 2);
         } else {
           //update the number of occurrences for this duplicate assoc.
           int number = tempint.intValue() + 1;
-          numberOfDuplicates.put(key, new Integer(number));
+          numberOfDuplicates.put(key, number);
         }
         //add the duplicate assoc to a HashMap.
         duplicateAssociations.put(key, temp);
@@ -173,8 +173,9 @@ public class AssociationSanity {
         }
       }
     }
-    if (id == null)
+    if (id == null) {
       id = "id" + topic.getObjectId();
+    }
     return id;
   }
 

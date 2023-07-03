@@ -20,7 +20,6 @@
 
 package net.ontopia.persistence.query.sql;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -121,13 +120,17 @@ public class RDBMSQueryResult implements QueryResultIF {
   
   @Override
   public boolean next() {
-    if (rs == null) return false;
+    if (rs == null) {
+      return false;
+    }
     try {
       synchronized (this) {
         // Skip to next result row
         boolean next = rs.next();
         // If row is not valid, we need to clean up
-        if (!next) close();
+        if (!next) {
+          close();
+        }
         return next;      
       }
     } catch (SQLException e) {
@@ -137,15 +140,16 @@ public class RDBMSQueryResult implements QueryResultIF {
 
   @Override
   public void close() {    
-    if (rs == null) return;
+    if (rs == null) {
+      return;
+    }
     try {
       synchronized (this) {
         Statement _stm = rs.getStatement();
-        Connection c = _stm.getConnection();
-        synchronized (c) {
-          rs.close();
-          rs = null;
-          if (_stm != null) _stm.close();
+        rs.close();
+        rs = null;
+        if (_stm != null) {
+          _stm.close();
         }
       }
     } catch (SQLException e) {
@@ -155,7 +159,9 @@ public class RDBMSQueryResult implements QueryResultIF {
 
   @Override
   protected void finalize() throws Throwable {
-    if (rs != null) close();
+    if (rs != null) {
+      close();
+    }
   }
   
 }

@@ -20,6 +20,7 @@
 
 package net.ontopia.infoset.impl.basic;
 
+import java.io.File;
 import java.net.URISyntaxException;
 import net.ontopia.infoset.core.LocatorIF;
 import net.ontopia.utils.OntopiaRuntimeException;
@@ -61,6 +62,27 @@ public class URILocatorTest extends AbstractLocatorTest {
   }
 
   @Test
+  public void testFileWithPlus() {
+    File file = new File("+");
+    LocatorIF locator = new URILocator(file);
+    String correct = getCorrectFileURI(file); 
+    Assert.assertTrue("+ character not escaped correctly, got '" + locator.getAddress() + "'"
+               + ", correct: '" + correct + "'",
+               locator.getAddress().equals(correct));
+  }
+
+  @Test
+  public void testFileWithPercent() {
+    File file = new File("%");
+    LocatorIF locator = new URILocator(file);
+    // % must be escaped, even in internal form
+    String correct = getCorrectFileURI(file) + "25";
+    Assert.assertTrue("% character not escaped correctly: '" + locator.getAddress() + "', " +
+               "correct: '" + correct + "'",
+               locator.getAddress().equals(correct));
+  }
+
+  @Test
   public void testGetExternalFormSimple2() {
     assertExternalForm("http://www.example.com/index.jsp",
                      "http://www.example.com/index.jsp");
@@ -93,7 +115,7 @@ public class URILocatorTest extends AbstractLocatorTest {
     assertAbsoluteResolution(base, "./g", "http://a/b/c/g");
     assertAbsoluteResolution(base, "g/", "http://a/b/c/g/");
     assertAbsoluteResolution(base, "/g", "http://a/g");
-    assertAbsoluteResolution(base, "//g", "http://g");
+    assertAbsoluteResolution(base, "//g", "http://g");    
     //testAbsoluteResolution(base, "?y", "http://a/b/c/d;p?y");
     assertAbsoluteResolution(base, "g?y", "http://a/b/c/g?y");
     assertAbsoluteResolution(base, "#s", "http://a/b/c/d;p?q#s");
@@ -199,6 +221,23 @@ public class URILocatorTest extends AbstractLocatorTest {
                  locator.getExternalForm().equals(external));
     } catch (URISyntaxException e) {
       Assert.fail("INTERNAL ERROR: " + e);
+    }
+  }
+
+  private String getCorrectFileURI(File file) {
+    // produce initial string
+    String uri = file.getAbsolutePath().replace(File.separatorChar, '/');
+    if (!uri.startsWith("/")) {
+      uri = "/" + uri;
+    }
+    uri = "file:" + uri;
+
+    // now, transcode to UTF-8
+    try {
+      byte raw[] = uri.getBytes("UTF-8");
+      return new String(raw, 0, raw.length, "8859_1");
+    } catch (java.io.UnsupportedEncodingException e) {
+      throw new OntopiaRuntimeException(e);
     }
   }
 }

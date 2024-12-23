@@ -82,7 +82,7 @@ public abstract class VariantNameTest extends AbstractScopedTest {
     URILocator loc = URILocator.create("http://www.ontopia.net");
     variant.setLocator(loc);
     Assert.assertTrue("locator identity not maintained after set",
-           variant.getLocator().equals(loc));            
+           variant.getLocator().equals(loc));
     Assert.assertTrue("data type is incorrect. should be xsd:anyURI", Objects.equals(variant.getDataType(), DataTypes.TYPE_URI));
 
     try {

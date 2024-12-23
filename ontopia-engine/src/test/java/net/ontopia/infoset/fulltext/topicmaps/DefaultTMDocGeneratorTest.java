@@ -214,4 +214,5 @@ public class DefaultTMDocGeneratorTest {
     Assert.assertTrue("address was " + field.getValue(),
 	   field.getValue() != null && field.getValue().equals(locator));
   }
+
 }

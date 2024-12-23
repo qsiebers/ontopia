@@ -42,9 +42,10 @@ public class CTMTopicMapReference extends AbstractOntopolyURLReference {
 
   @Override
   public TopicMapReaderIF getImporter() {
-    if (base_address == null)
+    if (base_address == null) {
       return new CTMTopicMapReader(url);
-    else
+    } else {
       return new CTMTopicMapReader(url, base_address);
+    }
   }
 }

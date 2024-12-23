@@ -252,9 +252,9 @@ public class URITest {
   }
 
   @Test
- public void testWhitespace() throws URISyntaxException {
-   assertIllegal("  ftp://ftp.ontopia.net/pub/  ");
- }
+  public void testWhitespace() throws URISyntaxException {
+    assertIllegal("  ftp://ftp.ontopia.net/pub/  ");
+  }
 
   @Test
   public void testNonAsciiCharsInFragment() throws URISyntaxException {
